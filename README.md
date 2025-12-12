@@ -184,19 +184,21 @@ EXEC ПримерПроцедуры;
 
 💡 Пример использования
 ```sql
--- Пример запроса для просмотра текущих остатков
+-- Пример с форматированием для отчёта
 SELECT 
-    p.name as 'Товар',
-    p.sku as 'Артикул',
-    w.quantity as 'Количество',
-    w.rack as 'Стеллаж',
-    w.shelf as 'Полка',
-    w.cell as 'Ячейка',
-    w.batch_number as 'Номер партии',
-    w.expiry_date as 'Срок годности',
-    DATEDIFF(DAY, GETDATE(), w.expiry_date) as 'Дней до истечения'
+    CONCAT(p.sku, ' - ', p.name) as 'Товар',
+    w.quantity as 'Кол-во',
+    CONCAT(w.rack, '-', w.shelf, '-', w.cell) as 'Место хранения',
+    CASE 
+        WHEN w.expiry_date IS NULL THEN 'Без срока'
+        WHEN DATEDIFF(DAY, GETDATE(), w.expiry_date) <= 30 THEN '⚠️ Скоро истекает'
+        ELSE CONCAT('Осталось ', DATEDIFF(DAY, GETDATE(), w.expiry_date), ' дн.')
+    END as 'Статус срока годности'
 FROM Warehouse w
 JOIN Products p ON w.product_id = p.product_id
 WHERE w.quantity > 0
-ORDER BY w.rack, w.shelf, w.cell;
+ORDER BY 
+    w.rack, 
+    w.shelf, 
+    w.cell;
 ```
