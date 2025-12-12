@@ -1,0 +1,48 @@
+# Описание таблиц БД "WarehouseManagement"
+
+## Основные таблицы:
+
+### 1. Users (Пользователи)
+- **user_id** - уникальный идентификатор
+- **email** - электронная почта (логин)
+- **password_hash** - хеш пароля
+- **role** - роль: admin/manager/storekeeper/auditor
+- **department** - отдел/склад
+
+### 2. Products (Товары)
+- **product_id** - уникальный идентификатор
+- **sku** - артикул/штрих-код
+- **name** - название товара
+- **category_id** - категория (FK → Categories)
+- **manufacturer_id** - производитель (FK → Manufacturers)
+- **unit** - единица измерения (шт, кг, уп)
+- **min_quantity** - минимальный остаток
+- **max_quantity** - максимальный остаток
+
+### 3. Warehouse (Складские остатки)
+- **warehouse_id** - уникальный идентификатор
+- **product_id** - товар (FK → Products)
+- **quantity** - количество
+- **rack, shelf, cell** - стеллаж, полка, ячейка
+- **expiry_date** - срок годности
+
+### 4. ReceiptDocuments (Приходные накладные)
+- **receipt_id** - уникальный идентификатор
+- **document_number** - номер документа (ПН-2025-001)
+- **supplier_id** - поставщик (FK → Manufacturers)
+- **status** - статус: draft/confirmed/completed
+- **created_by** - кто создал (FK → Users)
+
+### 5. ReceiptItems (Позиции прихода)
+- **receipt_item_id** - уникальный идентификатор
+- **receipt_id** - накладная (FK → ReceiptDocuments)
+- **product_id** - товар (FK → Products)
+- **planned_quantity** - планируемое количество
+- **actual_quantity** - фактическое количество
+- **unit_price** - цена за единицу
+
+## Связи между таблицами:
+Users → ReceiptDocuments (создаёт документы)
+Manufacturers → ReceiptDocuments (поставляет товары)
+Products → ReceiptItems (входит в накладные)
+ReceiptDocuments → ReceiptItems (состоит из позиций)
