@@ -184,13 +184,17 @@ EXEC ПримерПроцедуры;
 
 💡 Пример использования
 ```sql
+-- Пример запроса для просмотра текущих остатков
 SELECT 
-    p.sku as Артикул,
-    p.name as Товар,
-    w.quantity as Количество,
-    w.rack as Стеллаж,
-    w.shelf as Полка,
-    w.cell as Ячейка
+    p.name as 'Товар',
+    p.sku as 'Артикул',
+    w.quantity as 'Количество',
+    w.rack as 'Стеллаж',
+    w.shelf as 'Полка',
+    w.cell as 'Ячейка',
+    w.batch_number as 'Номер партии',
+    w.expiry_date as 'Срок годности',
+    DATEDIFF(DAY, GETDATE(), w.expiry_date) as 'Дней до истечения'
 FROM Warehouse w
 JOIN Products p ON w.product_id = p.product_id
 WHERE w.quantity > 0
