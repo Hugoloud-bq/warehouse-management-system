@@ -65,6 +65,54 @@ warehouse-management-system/
 ├── 📁 src/ # Исходный код будущего приложения (зарезервировано)
 └── 📄 README.md # Этот файл
 ```
+## 🔗 ER-диаграмма базы данных (схема связей)
+
+```mermaid
+erDiagram
+    Users {
+        int user_id PK "ID пользователя"
+        string email "Email"
+        string role "Роль"
+        string department "Отдел"
+    }
+    
+    Products {
+        int product_id PK "ID товара"
+        string sku "Артикул"
+        string name "Название"
+        int category_id FK "Категория"
+        int manufacturer_id FK "Производитель"
+    }
+    
+    Warehouse {
+        int warehouse_id PK "ID позиции"
+        int product_id FK "Товар"
+        int quantity "Количество"
+        string rack "Стеллаж"
+        string shelf "Полка"
+        string cell "Ячейка"
+    }
+
+    Users ||--o{ ReceiptDocuments : "создает"
+    Users ||--o{ IssueDocuments : "создает"
+    Users ||--o{ InternalMovements : "выполняет"
+    Users ||--o{ InventoryChecks : "проводит"
+
+    Manufacturers ||--o{ Products : "производит"
+    Categories ||--o{ Products : "классифицирует"
+    Manufacturers ||--o{ ReceiptDocuments : "поставляет"
+
+    Products ||--o{ Warehouse : "хранится в"
+    Products ||--o{ ReceiptItems : "входит в приход"
+    Products ||--o{ IssueItems : "входит в расход"
+    Products ||--o{ InternalMovements : "перемещается"
+    Products ||--o{ InventoryResults : "инвентаризируется"
+
+    ReceiptDocuments ||--o{ ReceiptItems : "содержит"
+    IssueDocuments ||--o{ IssueItems : "содержит"
+    InventoryChecks ||--o{ InventoryResults : "фиксирует"
+```
+
 # 🛠️ Технологический стек (планируемый)
 *   **Backend:** ASP.NET Core Web API (C#)
 *   **Frontend:** React.js / Vue.js
